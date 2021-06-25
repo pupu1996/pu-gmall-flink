@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+<!-- 本机测试路径 -->
+<!--    <property name="LOG_HOME" value="g:/opt/module/logs" />-->
+
+<!-- 部署到服务器存储路径 -->
+    <property name="LOG_HOME" value="/opt/module/gmall-flink/rt_applog/logs"/>
+
+    <!-- 打印日志数据到控制台 -->
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 以滚动文件的形式写入日志 -->
+    <!-- logback文件不会进行重命名 -->
+    <appender name="rollingFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/app.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_HOME}/app.%d{yyyy-MM-dd}.log</fileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- 单独指定指定类的日志策略 -->
+    <logger name="cn.gp1996.gmalllogger.controller.LoggerController"
+            level="INFO" additivity="false">
+        <appender-ref ref="rollingFile" /> <!-- 使用上面定义的appender -->
+        <appender-ref ref="console" />
+    </logger>
+
+    <!-- 项目日志的默认策略 -->
+    <root level="error" additivity="false">
+        <appender-ref ref="console" />
+    </root>
+
+</configuration>
