@@ -20,7 +20,8 @@ import java.util.Locale;
  * @date    2021-06-25
  * @desc    自定义Flink-CDC gmall业务数据反序列化器
  */
-public class CDC_DB_DeserializationSchema implements DebeziumDeserializationSchema<String> {
+public class CDC_DB_DeserializationSchema
+        implements DebeziumDeserializationSchema<String> {
 
     @Override
     public void deserialize(SourceRecord sourceRecord, Collector<String> collector) throws Exception {
@@ -49,8 +50,8 @@ public class CDC_DB_DeserializationSchema implements DebeziumDeserializationSche
         // TODO 判断after|before的情况
         // 保存结果类型
         // final LinkedList<JSONObject> jsonObjs = new LinkedList<>();
-        final JSONObject afterObj = new JSONObject();
-        final JSONObject beforeObj = new JSONObject();
+        JSONObject afterObj = new JSONObject();
+        JSONObject beforeObj = new JSONObject();
 
         if (after != null) {
             final List<Field> fields = after.schema().fields();
@@ -71,6 +72,12 @@ public class CDC_DB_DeserializationSchema implements DebeziumDeserializationSche
             // jsonObjs.add(beforeObject);
 
         }
+
+        // delete的情况
+//        if (before != null && after == null) {
+//            afterObj = beforeObj;
+//            beforeObj = new JSONObject();
+//        }
 
         // TODO 输出结果
         final String resLog = concatRes(

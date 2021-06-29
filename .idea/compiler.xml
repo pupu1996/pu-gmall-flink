@@ -11,5 +11,8 @@
         <module name="gmall-realtime-flink" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="common" target="8" />
+    </bytecodeTargetLevel>
   </component>
 </project>
