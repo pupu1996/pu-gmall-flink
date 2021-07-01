@@ -2,7 +2,6 @@ package cn.gp1996.gmall.flink.app.dwm;
 
 import cn.gp1996.gmall.flink.constants.GmallConstants;
 import cn.gp1996.gmall.flink.utils.KafkaUtil;
-import com.alibaba.fastjson.JSONAware;
 import com.alibaba.fastjson.JSONObject;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import org.apache.flink.api.common.eventtime.SerializableTimestampAssigner;
@@ -29,6 +28,12 @@ import java.util.Map;
  * @author  gp1996
  * @date    2021-06-26
  * @desc    输出跳出的数据
+ *          水线超过了第二条数据的时间才会认为第二次匹配上了,不然会认为中间可能还有其他数据到来,造成这次匹配失效
+ *          注意：
+ *          Pattern.begin("...").where(...).times(n).within(10s) => within是开集的,不包含超时时刻本身
+ *          Pattern.begin("start").where(...)
+ *              .next("second").where(...)
+ *              .within(10s)  map{"start"}
  */
 public class UserJumpOutApp {
 
@@ -47,7 +52,7 @@ public class UserJumpOutApp {
         // TODO 2.获取数据源
         final SingleOutputStreamOperator<JSONObject> pageLogStream = env.addSource(KafkaUtil.getConsumer(
                 GmallConstants.DWM_USER_JUMP_OUT_SOURCE_TOPIC,
-                GmallConstants.DWM_USER_JUMP_OUT_GROUP_ID
+                GmallConstants.DWM_USER_JUMP_OUT_GROUP_ID + "1"
         )).map(JSONObject::parseObject);
 
         // TODO 3.设置水线
@@ -79,7 +84,7 @@ public class UserJumpOutApp {
                 })
                 .times(2)
                 .consecutive()
-                .within(Time.seconds(10));
+                .within(Time.seconds(10)); // within作用于中间数据的间隔
 
         // TODO 6.将模式应用于流
         final PatternStream<JSONObject> patternStream = CEP.pattern(keyedPageLogStream, pattern);

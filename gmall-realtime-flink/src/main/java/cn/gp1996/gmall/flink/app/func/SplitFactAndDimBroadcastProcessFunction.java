@@ -49,7 +49,7 @@ public class SplitFactAndDimBroadcastProcessFunction
 
     @Override
     public void open(Configuration parameters) throws Exception {
-        // 打开Phoenix客户端(瘦)
+        // 打开Phoenix客户端
         Class.forName(PhoenixConfig.PHOENIX_DRIVER);
         final Properties phoenixConf = new Properties();
         phoenixConf.setProperty(PhoenixConfig.IS_NAMESPACE_MAPPING_ENABLED, "true");

@@ -12,6 +12,7 @@ public class GmallConstants {
     // -------------------------------------------------
     public final static String CONF_PATH_GMALL = "gmall.properties";
     public final static String CONF_PATH_KAFKA = "kafka.properties";
+    public final static String CONF_PATH_DRUID = "druid.properties";
 
     // -------------------------------------------------
     // Flink App公共配置
@@ -19,6 +20,16 @@ public class GmallConstants {
     public final static String FLINK_APP_CK_PATH = "hdfs://hadoop111:8020/gmall-flink/ck/";
     public final static Long DEFAULT_CK_INTERNAL = 60 * 60 * 1000L;
     public final static Long CLUSTER_MAX_OUT_OF_ORDER_MS = 5L;
+
+    // -------------------------------------------------
+    // Redis连接配置
+    // -------------------------------------------------
+    public final static String REDIS_SERVER = "hadoop111";
+    public final static int REDIS_PORT = 6379;
+
+    // -------------------------------------------------
+    // Druid连接配置
+    // -------------------------------------------------
 
     // -------------------------------------------------
     // ods 相关配置

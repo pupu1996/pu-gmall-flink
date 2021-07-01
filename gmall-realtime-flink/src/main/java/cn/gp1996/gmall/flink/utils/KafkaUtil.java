@@ -8,7 +8,10 @@ import org.apache.flink.streaming.connectors.kafka.KafkaDeserializationSchema;
 import org.apache.flink.streaming.connectors.kafka.KafkaSerializationSchema;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 /**
  * @author  gp1996
@@ -71,13 +74,20 @@ public class KafkaUtil {
      */
     public static FlinkKafkaConsumer<String> getConsumer(String topic, String groupId) {
 
-        final Properties consumerProps = new Properties(KafkaUtil.properties);
+        final Properties consumerProps = new Properties();
+        final Set<Map.Entry<Object, Object>> entries = properties.entrySet();
+        final Iterator<Map.Entry<Object, Object>> iter = entries.iterator();
+        while (iter.hasNext()) {
+            final Map.Entry<Object, Object> next = iter.next();
+            consumerProps.setProperty((String)next.getKey(), (String)next.getValue());
+        }
         consumerProps.setProperty(ConsumerConfig.GROUP_ID_CONFIG, groupId);
+        // System.out.println(consumerProps.toString());
 
         return new FlinkKafkaConsumer<String>(
                 topic,
                 new SimpleStringSchema(),
-                KafkaUtil.properties
+                consumerProps
         );
     }
 

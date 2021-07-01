@@ -62,8 +62,8 @@ public class OrderWideAppFunc {
 
             // 2.解析日期、添加字段
             final String dateTimeStr = orderDetailObj.getCreate_time();
-            System.out.println("Od dataTimeStr: " + dateTimeStr);
-            final Date dateTimeObj = DateUtil.DATE_TIME_FORMAT.parse(dateTimeStr);
+            // System.out.println("Od dataTimeStr: " + dateTimeStr);
+            final Date dateTimeObj = sdf.parse(dateTimeStr);
             orderDetailObj.setCreate_ts(dateTimeObj.getTime());
 
             return orderDetailObj;

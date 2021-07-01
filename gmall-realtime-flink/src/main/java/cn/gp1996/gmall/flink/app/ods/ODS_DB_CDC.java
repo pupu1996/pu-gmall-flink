@@ -48,7 +48,7 @@ public class ODS_DB_CDC {
                 //.tableList("gmall_flink.base_trademark") // -> 相当于监控库下所有表
                 .tableList("gmall_flink.order_info,gmall_flink.order_detail")
                 .deserializer(new CDC_DB_DeserializationSchema())
-                .startupOptions(StartupOptions.initial())
+                .startupOptions(StartupOptions.latest())
                 .build();
         final DataStreamSource<String> dbChangeStream = env.addSource(dbSourceFunction);
 
