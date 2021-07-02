@@ -27,7 +27,6 @@ public class RedisUtil {
         }
     }
 
-
     // 初始化Jedis连接池
     private static void realInit() {
         System.out.println("---------- 初始化jedis连接池 -----------");

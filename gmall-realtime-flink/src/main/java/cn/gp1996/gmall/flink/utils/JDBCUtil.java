@@ -19,6 +19,12 @@ import java.util.Properties;
  */
 public class JDBCUtil {
 
+
+    public static <T> List<T> query(
+            Connection conn, String sql, Class<T> clz, boolean needConvert) {
+        return query(conn, sql, null, clz, needConvert);
+    }
+
     /**
      * 通用的jdbc查询
      * @param conn  jdbc连接
@@ -30,7 +36,7 @@ public class JDBCUtil {
      * @return
      */
     public static <T> List<T> query(
-            Connection conn, String sql,Class<T> clz, boolean needConvert) {
+            Connection conn, String sql, String idValue , Class<T> clz, boolean needConvert) {
 
         // TODO 1.创建返回对象
         final LinkedList<T> queryResList = new LinkedList<>();
@@ -41,7 +47,10 @@ public class JDBCUtil {
         try {
             // TODO 2.预编译sql
             pst = conn.prepareStatement(sql);
-
+            // 设置参数
+            if (idValue != null) {
+                pst.setString(1, idValue.toString());
+            }
             // TODO 3.执行查询
             resultSet = pst.executeQuery();
 
@@ -67,6 +76,61 @@ public class JDBCUtil {
             if (pst != null) {
                 try {
                     pst.close();
+                } catch (SQLException throwables) {
+                    throwables.printStackTrace();
+                }
+            }
+        }
+
+        // TODO final 输出返回结果
+        return queryResList;
+    }
+
+
+
+    /**
+     * 复用PrepareStatement
+     * @param pst
+     * @param params
+     * @param clz
+     * @param needConvert
+     * @param <T>
+     * @return
+     */
+    public static <T> List<T> query(
+            PreparedStatement pst, List<String> params, Class<T> clz, boolean needConvert) {
+
+        // TODO 1.创建返回对象
+        final LinkedList<T> queryResList = new LinkedList<>();
+
+        ResultSet resultSet = null;
+
+        try {
+            System.out.println("params: " + params.toString());
+            // TODO 2.往prepareStatement中传入参数
+            for (int i = 1; i <= params.size(); i++) {
+                pst.clearParameters();
+                pst.setString(i, params.get(i - 1));
+            }
+
+            // TODO 执行sql(下次使用同一个pst查询,上个resultSet默认关闭)
+            resultSet = pst.executeQuery();
+
+            // TODO 4.解析结果
+            final ResultSetMetaData metaData = resultSet.getMetaData();
+            while (resultSet.next()) {
+                T row = parseColObj(resultSet, metaData, clz, needConvert);
+                queryResList.add(row);
+            }
+
+            // System.out.println(queryResList.toString());
+
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+        } finally {
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
                 } catch (SQLException throwables) {
                     throwables.printStackTrace();
                 }

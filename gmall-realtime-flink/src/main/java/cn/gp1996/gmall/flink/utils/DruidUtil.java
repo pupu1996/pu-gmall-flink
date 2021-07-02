@@ -67,9 +67,6 @@ public class DruidUtil {
         dataSource.setConnectProperties(properties);
         dataSource.setDriverClassName(PhoenixConfig.PHOENIX_DRIVER);
         dataSource.setUrl(PhoenixConfig.PHOENIX_SERVER);
-        // 开启prepareStatement缓存(会占用JVM内存)
-        dataSource.setPoolPreparedStatements(true);
-        dataSource.setMaxPoolPreparedStatementPerConnectionSize(10);
 
         // real初始化连接池
         dataSource.init();
@@ -78,7 +75,7 @@ public class DruidUtil {
     /**
      * 从Druid连接池中获取连接
      */
-    public static Connection getConnection() throws SQLException {
+    public static DruidPooledConnection getConnection() throws SQLException {
 
         final DruidPooledConnection connection = dataSource.getConnection();
         // connection.setSchema(PhoenixConfig.HBASE_SCHEMA);
